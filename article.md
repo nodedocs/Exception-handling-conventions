@@ -1,31 +1,29 @@
+# Handling Errors
 
-In node.js, it is considered standard practice to handle errors in asynchronous functions by returning them as the first argument to the current function's callback.  If there is an error, the first parameter is passed an `Error` object with all the details. Otherwise, the first parameter is null. 
+In Node it is considered standard practice to handle errors in asynchronous functions by returning them as the first argument to the current function's callback.  If there is an error, the first parameter is passed an `Error` object with all the details. Otherwise, the first parameter is null. 
 
 It's simpler than it sounds; let's demonstrate.
 
-```js
-var isTrue = function(value, callback) {
-  if (value === true) {
-    callback(null, "Value was true.");
-  }
-  else {
-    callback(new Error("Value is not true!"));
-  }
-}
+    function isTrue (value, callback) {
+      if (value === true) {
+        callback(null, "Value was true.");
+      }
+      else {
+        callback(new Error("Value is not true!"));
+      }
+    }
 
-var callback = function (error, retval) {
-  if (error) {
-    console.log(error);
-    return;
-  }
-  console.log(retval);
-}
-```
+    function callback (error, retval) {
+      if (error) {
+        console.log(error);
+        return;
+      }
+      console.log(retval);
+    }
 
 Note: when calling the same asynchronous function twice like this, you are in a race condition.
 You have no way of knowing for certain which callback will be called first when calling the functions in this manner.
 
-```js
     isTrue(false, callback);
     isTrue(true,  callback);
 
@@ -33,9 +31,8 @@ You have no way of knowing for certain which callback will be called first when 
       arguments: undefined,
       type: undefined,
       message: 'Value is not true!' }
-```
 
-Value was true.
+     Value was true.
 
 As you can see from the example, the callback is called with null as its first argument if there is no error. However, if there is an error, you create an `Error` object, which then becomes the callback's only parameter. 
 
